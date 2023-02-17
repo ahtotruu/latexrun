@@ -1041,8 +1041,12 @@ class LaTeXCommit(Task):
                 open(outname, 'r+b').close()
             else:
                 debug('commiting {} to {}', outname, commit)
-                shutil.copy(outname, outname + '~')
-                os.rename(outname + '~', commit)
+                # Hack: Just copy the output file instead of moving so that
+                # SumatraPDF (and perhaps other viewers using a similar file
+                # monitoring mechanism) would show the new version
+                #shutil.copy(outname, outname + '~')
+                #os.rename(outname + '~', commit)
+                shutil.copy(outname, commit)
         except OSError as e:
             raise TaskError('error committing latex output: {}'.format(e)) from e
         self._input('file', outname)
